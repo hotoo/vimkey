@@ -1,0 +1,6 @@
+
+# Vimlike.js
+
+* [http://code.google.com/p/vimlike-smooziee/source/browse/trunk/vimlike_smooziee.js vimlike_smooziee.js]
+* [http://code.google.com/p/vimlike-onsafari/source/browse/trunk/vimlilke.js vimlike.js]
+    [https://github.com/juno/vimlike-onsafari-custom @github]
