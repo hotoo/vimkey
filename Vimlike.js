@@ -170,13 +170,13 @@ var Vimlike = (function(){
         if(!keyname){return false;}
         this.history.push(keyname);
 
+        E.pause(evt);
+
         if(this.HANDLER[keyname] &&
           "function"==typeof(this.HANDLER[keyname])){
             this.HANDLER[keyname].call(this, this.count, evt);
             this.reset();
             this.counter(this.count);
-            //E.stop(evt);
-            E.pause(evt);
             return false;
         }
         var hi = this.history.join("");
@@ -185,8 +185,6 @@ var Vimlike = (function(){
             this.HANDLER[hi].call(this, this.count, evt);
             this.reset();
             this.counter(this.count);
-            //E.stop(evt);
-            E.pause(evt);
             return false;
         }
     };
