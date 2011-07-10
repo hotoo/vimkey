@@ -172,21 +172,27 @@ var Vimlike = (function(){
 
         E.pause(evt);
 
-        if(this.HANDLER[keyname] &&
+        // Note: 优先考虑处理当前键的映射函数，避免未映射到的键加在 history
+        // 中影响到后续映射无法执行。
+        // 比如命令模式没有映射普通的 a,b,c... 键，这些按键会一直 push 到
+        // history 中，如果只考虑 history+<CR> 的话会导致映射的 <CR> 键
+        // 无法被触发。
+        // TODO: 缺点是，如果同时映射了 j 和 gj，则 gj 永远都无法被触发。
+        // 目前已知的方案是：针对 <Esc>, <Tab>, <CR> 等特殊键特殊处理。
+        var keys = null;
+        if(this.HANDLER.hasOwnProperty(keyname) &&
           "function"==typeof(this.HANDLER[keyname])){
-            this.HANDLER[keyname].call(this, this.count, evt);
-            this.reset();
-            this.counter(this.count);
+            keys = keyname;
+        }else if(this.HANDLER.hasOwnProperty(keys = this.history.join("")) &&
+          "function"==typeof(this.HANDLER[keys])){
+            //keys = this.history.join("");
+        }else{
             return false;
         }
-        var hi = this.history.join("");
-        if(this.HANDLER[hi] &&
-          "function"==typeof(this.HANDLER[hi])){
-            this.HANDLER[hi].call(this, this.count, evt);
-            this.reset();
-            this.counter(this.count);
-            return false;
-        }
+        this.HANDLER[keys].call(this, this.count, evt);
+        this.reset();
+        this.counter(this.count);
+        return false;
     };
 
     return Vim;
