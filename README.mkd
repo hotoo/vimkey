@@ -1,0 +1,11 @@
+
+# Vimlike.js
+
+从 [Vimlide](https://github.com/hotoo/Vimlide) 中抽象出来的通用类，
+用以方便实现其他页面的 Vimlike 支持。
+可以实例化成多个对象，以便于实现多个模式下的处理机制。
+
+## 参考阅读
+* [vimlike smooziee.js](http://code.google.com/p/vimlike-smooziee/source/browse/trunk/vimlike_smooziee.js)
+* [vimlike.js](http://code.google.com/p/vimlike-onsafari/source/browse/trunk/vimlilke.js)
+    [@github](https://github.com/juno/vimlike-onsafari-custom)
