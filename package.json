@@ -1,0 +1,31 @@
+{
+  "name": "vimkey",
+  "version": "0.1.0",
+  "description": "Vim-like key mapping",
+  "keywords": ["Vim", "Key", "Mapping"],
+  "homepage": "",
+  "author": "闲耘™ <hotoo.cn@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "bugs": {
+    "url": ""
+  },
+  "licenses": "MIT",
+  "spm": {
+    "main": "vimkey.js",
+    "dependencies": {
+    },
+    "devDependencies": {
+      "expect.js": "0.3.1"
+    }
+  },
+  "devDependencies": {
+    "spm": "3"
+  },
+  "scripts": {
+    "test": "spm test",
+    "build": "spm build"
+  }
+}
