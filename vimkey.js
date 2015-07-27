@@ -191,8 +191,16 @@ var F = {
         return function() {
             return method.apply(instance, arguments);
         }
-    }
+    },
 };
+
+function typeOf(type) {
+  return function(object) {
+    return Object.prototype.toString.call(object) === '[object ' + type + ']';
+  }
+}
+
+var isFunction = typeOf('Function');
 
 var DEFAULT_OPTIONS = {
   countable: false,
@@ -201,7 +209,7 @@ var Vimkey = function(container, options){
   this.options = options;
   this.autoClear = true;
   this.modeOn = false;
-  this.history = [];
+  this.history = "";
   this.count = "";
   this.HANDLER = {};
   // `keypress` event not trigger some key event, like delete.
@@ -220,7 +228,7 @@ Vimkey.prototype.map = function(keys, callback, duplicate){
 };
 Vimkey.prototype.reset = function(){
     this.count = "";
-    this.history.length = 0;
+    this.history = "";
     this.modeOn = true;
     this.counter(this.count);
 };
@@ -263,25 +271,21 @@ Vimkey.prototype.handler = function(evt){
       return false;
     default:
     }
-    this.history.push(keyname);
+    this.history += keyname;
 
-    // Note: 优先考虑处理当前键的映射函数，避免未映射到的键加在 history
-    // 中影响到后续映射无法执行。
-    // 比如命令模式没有映射普通的 a,b,c... 键，这些按键会一直 push 到
-    // history 中，如果只考虑 history+<CR> 的话会导致映射的 <CR> 键
-    // 无法被触发。
-    // TODO: 缺点是，如果同时映射了 j 和 gj，则 gj 永远都无法被触发。
-    // 目前已知的方案是：针对 <Esc>, <Tab>, <CR> 等特殊键特殊处理。
-    var keys = null;
-    if(this.HANDLER.hasOwnProperty(keyname) &&
-      "function" === typeof(this.HANDLER[keyname])){
-        keys = keyname;
-    }else if(this.HANDLER.hasOwnProperty(keys = this.history.join("")) &&
-      "function" === typeof(this.HANDLER[keys])){
-        //keys = this.history.join("");
-    }else{
-        return false;
+    function hasMap(object, key) {
+      return object && object.hasOwnProperty(key) && isFunction(object[key]);
     }
+
+    var keys = this.history;
+    if (hasMap(this.HANDLER, this.history)) {
+      keys = this.history;
+    } else if (hasMap(this.HANDLER, keyname)) {
+      keys = keyname;
+    } else {
+      return false;
+    }
+
     this.HANDLER[keys].call(this, evt, this.count === '' ? undefined : Number(this.count));
     this.reset();
     this.counter(this.count);

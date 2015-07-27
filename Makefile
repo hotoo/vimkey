@@ -12,4 +12,4 @@ publish: publish-doc
 	@git tag $(version)
 	@git push origin $(version)
 
-.PHONY: test publish coverage install
+.PHONY: test publish publish-doc

@@ -104,8 +104,9 @@ var search = new Vimkey(searchIpt, {
   countable: false,
 });
 search.map("<CR>", function(){
-  // TODO: search.
+  var key = searchIpt.value;
   clearSearch();
+  alert('Search word: ' + key);
 });
 search.map("<Esc>", clearSearch, true);
 search.map("<BS>", function(evt, c){
