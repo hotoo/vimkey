@@ -35,36 +35,85 @@
 
 ````javascript
 function $(id){return document.getElementById(id);}
+function event_pause(evt){
+    if (evt.stopPropagation) {
+        evt.stopPropagation();
+    } else {
+        evt.cancelBubble = true;
+    }
+}
+function event_stop(evt){
+    if(evt.stopPropagation){
+        evt.stopPropagation();
+        evt.preventDefault();
+    }else{
+        evt.cancelBubble = true;
+        evt.returnValue = false;
+    }
+}
 
+var LINE_HEIGHT = 100;
 var Vimkey = require('vimkey');
 var searchBox = $("searchBox");
 var searchIpt = $("key");
 
-var normal = new Vimkey(document);
+var normal = new Vimkey(document, {
+  countable: true,
+});
 normal.counter = function(c){document.getElementById("ct").innerHTML = c;}
-normal.map("j", function(c){window.scrollBy(0, 40*(c||1))});
-normal.map("k", function(c){window.scrollBy(0, -40*(c||1))});
-normal.map("h", function(c){window.scrollBy(-40*(c||1), 0)});
-normal.map("l", function(c){window.scrollBy(40*(c||1), 0)});
-normal.map("gg", function(c){window.scrollTo(0, c||0)});
-normal.map("G", function(c){window.scrollTo(0, c||9999999)});
-normal.map("/", function(c){searchBox.style.display = "block"; searchIpt.focus();});
-normal.map(":", function(c){commandBox.style.display = "block"; commandIpt.focus();});
+normal.map("j", function(count, evt){
+  event_stop(evt);
+  window.scrollBy(0, LINE_HEIGHT * count);
+});
+
+normal.map("k", function(c, evt){
+  event_stop(evt);
+  window.scrollBy(0, -(LINE_HEIGHT * c));
+});
+normal.map("h", function(c, evt){
+  event_stop(evt);
+  window.scrollBy(-(LINE_HEIGHT * c), 0);
+});
+normal.map("l", function(c, evt){
+  event_stop(evt);
+  window.scrollBy(40*(c||1), 0);
+});
+normal.map("gg", function(c, evt){
+  event_stop(evt);
+  window.scrollTo(0, (c - 1) * LINE_HEIGHT);
+});
+normal.map("G", function(c, evt){
+  event_stop(evt);
+  window.scrollTo(0, c||9999999);
+});
+normal.map("/", function(c, evt){
+  event_stop(evt);
+  searchBox.style.display = "block"; searchIpt.focus();
+});
+normal.map(":", function(c, evt){
+  event_stop(evt);
+  commandBox.style.display = "block"; commandIpt.focus();
+});
 
 function clearSearch(){
   searchIpt.value = "";
   searchIpt.blur();
   searchBox.style.display = "none";
 }
-var search = new Vimkey(searchIpt);
+var search = new Vimkey(searchIpt, {
+  countable: false,
+});
 search.map("<CR>", function(){
   // TODO: search.
   clearSearch();
 });
 search.map("<Esc>", clearSearch, true);
-search.map("<BS>", function(){
+search.map("<BS>", function(c, evt){
   if(searchIpt.value=="") {
+    event_stop(evt);
     clearSearch();
+  } else {
+    event_pause(evt);
   }
 });
 
@@ -76,15 +125,24 @@ function clearCommand(){
 }
 var commandIpt = $("command");
 var commandBox = $("commandBox");
-var command = new Vimkey(commandIpt);
+var command = new Vimkey(commandIpt, {
+  countable: false,
+});
 command.map("<CR>", function(){
-  try{window.eval(commandIpt.value)}catch(ex){alert("Command not supports.")}
+  try {
+    window.eval(commandIpt.value);
+  } catch(ex) {
+    alert("Command not supports.");
+  }
   clearCommand();
 });
 command.map("<Esc>", clearCommand, true);
-command.map("<BS>", function(){
+command.map("<BS>", function(c, evt){
   if(commandIpt.value=="") {
+    event_stop(evt);
     clearCommand();
+  } else {
+    event_pause(evt);
   }
 });
 ````
