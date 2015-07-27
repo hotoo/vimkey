@@ -1,8 +1,16 @@
-# Vimkey [![spm version](http://spmjs.io/badge/vimkey)](http://spmjs.io/package/vimkey)
+# Vimkey
 
 ---
 
-Vim-like key mapping from [Vimlide](https://github.com/hotoo/Vimlide).
+[![NPM version][npm-badge]][npm-url]
+[![spm version][spm-badge]][spm-url]
+
+[npm-badge]: https://img.shields.io/npm/v/vimkey.svg?style=flat
+[npm-url]: https://www.npmjs.com/package/vimkey
+[spm-url]: http://spmjs.io/package/vimkey
+[spm-badge]: http://spmjs.io/badge/vimkey
+
+Vim-like key mapping for the web from [Vimlide](https://github.com/hotoo/Vimlide).
 
 ## Install
 
@@ -13,11 +21,14 @@ $ spm install vimkey --save
 ## Usage
 
 ```js
-var vimkey = require('vimkey');
-// use vimkey
-```
+var Vimkey = require('vimkey');
+var LINE_HEIGHT = 100;
 
-## Reference
-* [vimlike smooziee.js](http://code.google.com/p/vimlike-smooziee/source/browse/trunk/vimlike_smooziee.js)
-* [vimlike.js](http://code.google.com/p/vimlike-onsafari/source/browse/trunk/vimlilke.js)
-    [@github](https://github.com/juno/vimlike-onsafari-custom)
+var normalMode = new Vimkey(document, {
+  countable: true,
+});
+normalMode.map('j', function(evt, count = 1) {
+  window.scrollBy(LINE_HEIGHT * count, 0);
+  evt.stopPropagation();
+});
+```

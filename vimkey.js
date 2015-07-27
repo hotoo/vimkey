@@ -282,7 +282,7 @@ Vimkey.prototype.handler = function(evt){
     }else{
         return false;
     }
-    this.HANDLER[keys].call(this, this.count === '' ? 1 : this.count, evt);
+    this.HANDLER[keys].call(this, evt, this.count === '' ? undefined : Number(this.count));
     this.reset();
     this.counter(this.count);
     return false;

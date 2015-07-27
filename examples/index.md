@@ -36,20 +36,20 @@
 ````javascript
 function $(id){return document.getElementById(id);}
 function event_pause(evt){
-    if (evt.stopPropagation) {
-        evt.stopPropagation();
-    } else {
-        evt.cancelBubble = true;
-    }
+  if (evt.stopPropagation) {
+    evt.stopPropagation();
+  } else {
+    evt.cancelBubble = true;
+  }
 }
 function event_stop(evt){
-    if(evt.stopPropagation){
-        evt.stopPropagation();
-        evt.preventDefault();
-    }else{
-        evt.cancelBubble = true;
-        evt.returnValue = false;
-    }
+  if(evt.stopPropagation){
+    evt.stopPropagation();
+    evt.preventDefault();
+  }else{
+    evt.cancelBubble = true;
+    evt.returnValue = false;
+  }
 }
 
 var LINE_HEIGHT = 100;
@@ -61,36 +61,36 @@ var normal = new Vimkey(document, {
   countable: true,
 });
 normal.counter = function(c){document.getElementById("ct").innerHTML = c;}
-normal.map("j", function(count, evt){
+normal.map("j", function(evt, count){
   event_stop(evt);
-  window.scrollBy(0, LINE_HEIGHT * count);
+  window.scrollBy(0, LINE_HEIGHT * (count || 1));
 });
 
-normal.map("k", function(c, evt){
+normal.map("k", function(evt, c){
   event_stop(evt);
-  window.scrollBy(0, -(LINE_HEIGHT * c));
+  window.scrollBy(0, -(LINE_HEIGHT * (c || 1)));
 });
-normal.map("h", function(c, evt){
+normal.map("h", function(evt, c){
   event_stop(evt);
-  window.scrollBy(-(LINE_HEIGHT * c), 0);
+  window.scrollBy(-(LINE_HEIGHT * (c || 1)), 0);
 });
-normal.map("l", function(c, evt){
+normal.map("l", function(evt, c){
   event_stop(evt);
-  window.scrollBy(40*(c||1), 0);
+  window.scrollBy(LINE_HEIGHT * (c || 1), 0);
 });
-normal.map("gg", function(c, evt){
+normal.map("gg", function(evt, c){
   event_stop(evt);
   window.scrollTo(0, (c - 1) * LINE_HEIGHT);
 });
-normal.map("G", function(c, evt){
+normal.map("G", function(evt, c){
   event_stop(evt);
   window.scrollTo(0, c||9999999);
 });
-normal.map("/", function(c, evt){
+normal.map("/", function(evt, c){
   event_stop(evt);
   searchBox.style.display = "block"; searchIpt.focus();
 });
-normal.map(":", function(c, evt){
+normal.map(":", function(evt, c){
   event_stop(evt);
   commandBox.style.display = "block"; commandIpt.focus();
 });
@@ -108,7 +108,7 @@ search.map("<CR>", function(){
   clearSearch();
 });
 search.map("<Esc>", clearSearch, true);
-search.map("<BS>", function(c, evt){
+search.map("<BS>", function(evt, c){
   if(searchIpt.value=="") {
     event_stop(evt);
     clearSearch();
@@ -137,7 +137,7 @@ command.map("<CR>", function(){
   clearCommand();
 });
 command.map("<Esc>", clearCommand, true);
-command.map("<BS>", function(c, evt){
+command.map("<BS>", function(evt, c){
   if(commandIpt.value=="") {
     event_stop(evt);
     clearCommand();
