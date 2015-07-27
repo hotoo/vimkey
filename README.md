@@ -38,3 +38,9 @@ normalMode.map('j', function(evt, count = 1) {
   evt.stopPropagation();
 });
 ```
+
+## API
+
+### .map(String key, Function handler)
+
+key mapping.
