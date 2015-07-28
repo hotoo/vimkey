@@ -65,6 +65,10 @@ normal.map("j", function(evt, count){
   event_stop(evt);
   window.scrollBy(0, LINE_HEIGHT * (count || 1));
 });
+normal.map("gj", function(evt, count){
+  event_stop(evt);
+  window.scrollBy(0, LINE_HEIGHT * (count || 1));
+});
 
 normal.map("k", function(evt, c){
   event_stop(evt);

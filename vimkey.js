@@ -128,6 +128,10 @@ function getKeyName(evt) {
   return keyname;
 }
 
+function hasMap(object, key) {
+  return object && object.hasOwnProperty(key) && isFunction(object[key]);
+}
+
 var E = {
     KEY_BACKSPACE: 8,
     KEY_TAB     : 9,
@@ -266,27 +270,18 @@ Vimkey.prototype.handler = function(evt){
         this.count += keyname;
         this.counter(this.count);
       }
-      break;
+      return false;
     case undefined:
       return false;
     default:
     }
     this.history += keyname;
 
-    function hasMap(object, key) {
-      return object && object.hasOwnProperty(key) && isFunction(object[key]);
+    if (!hasMap(this.HANDLER, this.history)) {
+      return false
     }
 
-    var keys = this.history;
-    if (hasMap(this.HANDLER, this.history)) {
-      keys = this.history;
-    } else if (hasMap(this.HANDLER, keyname)) {
-      keys = keyname;
-    } else {
-      return false;
-    }
-
-    this.HANDLER[keys].call(this, evt, this.count === '' ? undefined : Number(this.count));
+    this.HANDLER[this.history].call(this, evt, this.count === '' ? undefined : Number(this.count));
     this.reset();
     this.counter(this.count);
     return false;
