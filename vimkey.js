@@ -172,19 +172,16 @@ var Vimkey = function(container, options){
   this.HANDLER = {};
   // `keypress` event not trigger some key event, like delete.
   E.add(container, "keydown", F.createDelegate(this, this.handler));
-  this._reset = F.createDelegate(this, this.reset);
-  this.map("<Esc>", this._reset);
 };
 // Duplicate mapping.
 Vimkey.prototype.map = function(keys, callback, duplicate){
-    if(!duplicate && (this.HANDLER.hasOwnProperty(keys) &&
-      "function"==typeof(this.HANDLER[keys]))){
-        throw new Error("Duplicate mapping: "+keys);
-    }
-    if(typeof(callback) != "function"){return;}
-    this.HANDLER[keys] = callback;
+  if(!duplicate && hasMap(this.HANDLER, keys)){
+    throw new Error("Duplicate mapping: "+keys);
+  }
+  if(!isFunction(callback)){return;}
+  this.HANDLER[keys] = callback;
 };
-Vimkey.prototype.reset = function(){
+Vimkey.prototype.reset = function() {
     this.count = "";
     this.history = "";
     this.modeOn = true;
@@ -206,36 +203,27 @@ Vimkey.prototype.handler = function(evt){
       this._timer = window.setTimeout(this._reset, 2000);
     }
 
-    switch(keyname){
-    case '<Control>':
-    case '<Shift>':
+    if (keyname === '<Control>' || keyname === '<Shift>' || keyname === '<Alt>') {
       return false;
-    case '0':
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-    case '9':
-      if (this.options.countable) {
-        this.count += keyname;
-        this.counter(this.count);
-      }
-      return false;
-    case undefined:
-      return false;
-    default:
     }
+    if (this.options.countable && /^[0-9]$/.test(keyname)) {
+      this.count += keyname;
+      this.counter(this.count);
+      return false;
+    }
+
     this.history += keyname;
 
-    if (!hasMap(this.HANDLER, this.history)) {
+    var keys;
+    if (hasMap(this.HANDLER, this.history)) {
+      keys = this.history;
+    } else if (hasMap(this.HANDLER, keyname)) {
+      keys = keyname;
+    } else {
       return false
     }
 
-    this.HANDLER[this.history].call(this, evt, this.count === '' ? undefined : Number(this.count));
+    this.HANDLER[keys].call(this, evt, this.count === '' ? undefined : Number(this.count));
     this.reset();
     this.counter(this.count);
     return false;

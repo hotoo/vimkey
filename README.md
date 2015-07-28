@@ -33,6 +33,10 @@ var LINE_HEIGHT = 100;
 var normalMode = new Vimkey(document, {
   countable: true,
 });
+normalMode.map('<Esc>', function(evt) {
+  this.reset();
+  evt.stopPropagation();
+});
 normalMode.map('j', function(evt, count = 1) {
   window.scrollBy(LINE_HEIGHT * count, 0);
   evt.stopPropagation();
